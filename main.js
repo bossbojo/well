@@ -1,8 +1,9 @@
 const { app, ipcMain, BrowserWindow } = require('electron')
-//const { NFC } = require('nfc-pcsc');
+
+// https://www.npmjs.com/package/smartcardreader
+const SmartCardReader = require('smartcardreader');
 
 let win;
-//const nfc = new NFC();
 
 function createWindow() {
     // Create the browser window.
@@ -48,28 +49,12 @@ ipcMain.on('ping', (event, arg) => {
     event.sender.send('count', ++count);
 })
 
-//--------------
-// nfc.on('reader', reader => {
-// 	console.log(`${reader.reader.name}  device attached`);
-// 	reader.aid = 'F222222222';
-// 	reader.on('card', card => {
-// 		console.log(`${reader.reader.name}  card detected`, card);
-// 	});
-
-// 	reader.on('card.off', card => {
-// 		console.log(`${reader.reader.name}  card removed`, card);
-// 	});
-
-// 	reader.on('error', err => {
-// 		console.log(`${reader.reader.name}  an error occurred`, err);
-// 	});
-
-// 	reader.on('end', () => {
-// 		console.log(`${reader.reader.name}  device removed`);
-// 	});
-
-// });
-
-// nfc.on('error', err => {
-// 	console.log('an error occurred', err);
-// });
+SmartCardReader.on('connect', (device) => {
+    console.info(`connected: ${device}`);
+});
+SmartCardReader.on('disconnect', (device) => {
+    console.info(`disconnected: ${device}`);
+});
+SmartCardReader.on('read', (data) => {
+    console.info(`read: ${data}`);
+});
